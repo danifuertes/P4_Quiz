@@ -24,7 +24,7 @@ const biglog = (msg, color) => {
 
 //TEXTO DE ERROR POR PANTALLA
 const errlog = (emsg) => {
-	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), bgYellowBright)}`);
+	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}`);
 };
 
 //Funciones a exportar

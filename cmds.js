@@ -21,45 +21,173 @@ exports.helpCmd = rl => {
 
 //LISTAR
 exports.listCmd = rl => {
-	log("Listar todos los quizzes existentes", 'red');
+	model.getAll().forEach((quiz, id) => {
+		log(`	[${colorize(id, 'magenta')}]: ${quiz.question}`);
+	});
 	rl.prompt();
 };
 
 //MOSTRAR
 exports.showCmd = (id, rl) => {
-	log("Mostrar el quiz indicado", 'red');
+	if (typeof id === "undefined") {
+		errlog(`Es necesario indicar el índice de la pregunta que desea mostrar`);
+	} else {
+		try {
+			const quiz = model.getByIndex(id);
+			log(`	[${colorize(id, 'magenta')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`)
+		} catch (error) {
+			errlog(error.message);
+		}
+	}
 	rl.prompt();
 };
 
 //AÑADIR
-exports.addCmd = rl=> {
-	log("Añadir un nuevo quiz", 'red');
-	rl.prompt();
+exports.addCmd = rl => {
+	rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
+		rl.question(colorize(' Introduzca la respuesta: ', 'red'), answer => {
+			model.add(question, answer);
+			log(`	${colorize('Se ha añadido', 'magenta')}: ${question} ${colorize('=>', 'magenta')} ${answer}`);
+			rl.prompt();
+		});
+	});
 };
 
 //BORRAR
 exports.deleteCmd = (id, rl) => {
-	log("Borrar el quiz indicado", 'red');
+	if (typeof id === "undefined") {
+		errlog(`Es necesario indicar el índice de la pregunta que desea mostrar`);
+	} else {
+		try {
+			model.deleteByIndex(id);
+		} catch (error) {
+			errlog(error.message);
+		}
+	}
 	rl.prompt();
 };
 
 //EDITAR
 exports.editCmd = (id, rl) => {
-	log("Editar el quiz indicado", 'red');
-	rl.prompt();
+	if (typeof id === "undefined") {
+		errlog(`Es necesario indicar el índice de la pregunta que desea mostrar`);
+		rl.prompt();
+	} else {
+		try {
+			const quiz = model.getByIndex(id);
+			process.stdout.isTTY && setTimeout(() => {rl.write(quiz.question)}, 0);
+			rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
+				process.stdout.isTTY && setTimeout(() => {rl.write(quiz.answer)}, 0);
+				rl.question(colorize(' Introduzca la respuesta: ', 'red'), answer => {
+					model.update(id, question, answer);
+					log(`	Se ha cambiado el quiz ${colorize(id, 'magenta')} por: ${question} ${colorize('=>', 'magenta')} ${answer}`);
+					rl.prompt();
+				});
+			});
+		} catch (error) {
+			errlog(error.message);
+			rl.prompt();
+		}
+	}
 };
 
 //TEST
 exports.testCmd = (id, rl) => {
-	log("Probar el quiz indicado", 'red');
+	if (typeof id === "undefined") {
+		errlog(`Es necesario indicar el índice de la pregunta que desea mostrar`);
+		rl.prompt();
+	} else {
+		try {
+			const quiz = model.getByIndex(id);
+			rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
+				log(' Su respuesta es:\n');
+				let user = answer.trim().toLowerCase();
+				let real = quiz.answer.trim().toLowerCase();
+				user = user.replace(" ", "");
+				user = user.replace("á", "a");
+				user = user.replace("é", "e");
+				user = user.replace("í", "i");
+				user = user.replace("ó", "o");
+				user = user.replace("ú", "u");
+				real = real.replace(" ", "");
+				real = real.replace("á", "a");
+				real = real.replace("é", "e");
+				real = real.replace("í", "i");
+				real = real.replace("ó", "o");
+				real = real.replace("ú", "u");
+				if (user === real){
+					biglog('CORRECTA', 'green');
+					rl.prompt();
+				} else {
+					biglog('INCORRECTA', 'red');
+					rl.prompt();
+				}
+			});
+		} catch (error) {
+			errlog(error.message);
+			rl.prompt();
+		}
+	}
 	rl.prompt();
 };
 
 
 //JUGAR
 exports.playCmd = rl => {
-	log("Jugar", 'red');
-	rl.prompt();
+	let n = model.count();
+	let score = 0;
+	let toBeResolved = [];
+	for (let i = 0; i < n; i++) {
+		toBeResolved.push(i);
+	}
+	if (toBeResolved.length === 0){
+		log('No hay preguntas para responder', 'red');
+		rl.prompt();
+	} else {
+		try {
+			const playOne = () => {
+				let id = Math.floor(Math.random()*toBeResolved.length);
+				let quiz = model.getByIndex(toBeResolved[id]);
+				toBeResolved.splice(id, 1);
+				rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
+					log(' Su respuesta es:\n');
+					let user = answer.trim().toLowerCase();
+					let real = quiz.answer.trim().toLowerCase();
+					user = user.replace(" ", "");
+					user = user.replace("á", "a");
+					user = user.replace("é", "e");
+					user = user.replace("í", "i");
+					user = user.replace("ó", "o");
+					user = user.replace("ú", "u");
+					real = real.replace(" ", "");
+					real = real.replace("á", "a");
+					real = real.replace("é", "e");
+					real = real.replace("í", "i");
+					real = real.replace("ó", "o");
+					real = real.replace("ú", "u");
+					if (user === real){
+						biglog('CORRECTA', 'green');
+						score++;
+						if (toBeResolved.length === 0){
+							log('¡Has respondido a todas las preguntas con éxito!', 'red');
+							log(`Puntuación final: ${colorize(score, 'green')} puntos`);
+							rl.prompt();
+						} else {
+							playOne();
+						}
+					} else {
+						biglog('INCORRECTA', 'red');
+						log(`Puntuación final: ${colorize(score, 'green')} puntos`);
+						rl.prompt();
+					}
+				});
+			}
+			playOne();
+		} catch (error) {
+			errlog(error.message);
+			rl.prompt();
+		}
+	}
 };
 
 //CRÉDITOS
