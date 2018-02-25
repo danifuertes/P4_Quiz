@@ -1,11 +1,39 @@
+//Requires iniciales
 const readline = require('readline');
+const figlet = require('figlet');
+const chalk = require('chalk');
 
-console.log("¡Bienvenido a CORE Quiz!");
+//Manejadores de texto
+//COLOREAR
+const colorize = (msg, color) => {
+	if (typeof color !== "undefined") {
+		msg = chalk[color].bold(msg);
+	}
+	return msg;
+}
+
+//TEXTO POR PANTALLA
+const log = (msg, color) => {
+	console.log(colorize(msg, color));
+}
+
+//TEXTO GRANDE POR PANTALLA
+const biglog = (msg, color) => {
+	log(figlet.textSync(msg, {horizontalLayout: 'full'}), color)
+}
+
+//TEXTO DE ERROR POR PANTALLA
+const errlog = (emsg) => {
+	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), bgYellowBright)}`);
+}
+
+//Mensaje inicial
+biglog('CORE Quiz', 'green');
 
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
-	prompt: 'quiz> ',
+	prompt: colorize('quiz> ', 'blue'),
 	completer: (line) => {
 		const completions = 'h help list show add delete edit test play credits quit q'.split(' ');
 		const hits = completions.filter((c) => c.startsWith(line));
@@ -69,82 +97,83 @@ rl.on('line', (line) => {
   		break;
 
     default:
-      console.log(`Comando desconocido: '${cmd}'`);
-      console.log("Use 'help' para ver todos los comandos disponibles");
+      log(`Comando desconocido: '${colorize(cmd, 'red')}'`);
+      log(`Escriba '${colorize('help', 'green')}' para ver todos los comandos disponibles`);
+      rl.prompt();
       break;
   }
 
 //Salir del programa
 }).on('close', () => {
-  console.log('¡Hasta pronto!');
+  biglog('¡Hasta pronto!', 'red');
   process.exit(0);
 });
 
 //AYUDA
 const helpCmd = () => {
-	console.log("Commandos:");
-	console.log("	h|help - Muestra esta ayuda.");
-	console.log("	list - Listar los quizzes existentes.");
-	console.log("	show <id> - Muestra la pregunta y la respuesta el quiz indicado.");
-	console.log("	add - Añadir un nuevo quiz interactivamente.");
-	console.log("	delete <id> - Borrar el quiz indicado.");
-	console.log("	edit <id> - Editar el quiz indicado.");
-	console.log("	test <id> - Probar el quiz indicado.");
-	console.log("	p|play - Jugar a preguntar aleatoriamente todos los quizzes.");
-	console.log("	credits - Créditos.");
-	console.log("	q|quit - Salir del programa.");
+	log("Commandos:");
+	log("	h|help - Muestra esta ayuda.");
+	log("	list - Listar los quizzes existentes.");
+	log("	show <id> - Muestra la pregunta y la respuesta el quiz indicado.");
+	log("	add - Añadir un nuevo quiz interactivamente.");
+	log("	delete <id> - Borrar el quiz indicado.");
+	log("	edit <id> - Editar el quiz indicado.");
+	log("	test <id> - Probar el quiz indicado.");
+	log("	p|play - Jugar a preguntar aleatoriamente todos los quizzes.");
+	log("	credits - Créditos.");
+	log("	q|quit - Salir del programa.");
 	rl.prompt();
 };
 
 // Descripción de la funciones de los comandos
 //LISTAR
 const listCmd = () => {
-	console.log("Listar todos los quizzes existentes");
+	log("Listar todos los quizzes existentes", 'red');
 	rl.prompt();
 };
 
 //MOSTRAR
 const showCmd = id => {
-	console.log("Mostrar el quiz indicado");
+	log("Mostrar el quiz indicado", 'red');
 	rl.prompt();
 };
 
 //AÑADIR
 const addCmd = () => {
-	console.log("Añadir un nuevo quiz");
+	log("Añadir un nuevo quiz", 'red');
 	rl.prompt();
 };
 
 //BORRAR
 const deleteCmd = id => {
-	console.log("Borrar el quiz indicado");
+	log("Borrar el quiz indicado", 'red');
 	rl.prompt();
 };
 
 //EDITAR
 const editCmd = id => {
-	console.log("Editar el quiz indicado");
+	log("Editar el quiz indicado", 'red');
 	rl.prompt();
 };
 
 //TEST
 const testCmd = id => {
-	console.log("Probar el quiz indicado");
+	log("Probar el quiz indicado", 'red');
 	rl.prompt();
 };
 
 
 //JUGAR
 const playCmd = () => {
-	console.log("Jugar");
+	log("Jugar", 'red');
 	rl.prompt();
 };
 
 //CRÉDITOS
 const creditsCmd = () => {
-	console.log("Autores de la práctica:");
-	console.log("	Alexander de la Torre Astanin");
-	console.log("	Daniel Fuertes Coiras");
+	log("Autores de la práctica:", 'red');
+	log("	Alexander de la Torre Astanin", 'red');
+	log("	Daniel Fuertes Coiras", 'red');
   	rl.prompt();
 }
 
