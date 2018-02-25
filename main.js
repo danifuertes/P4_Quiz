@@ -3,6 +3,71 @@ const readline = require('readline');
 const figlet = require('figlet');
 const chalk = require('chalk');
 
+//Quizzes
+let quizzes = [
+	{
+		question: "Capital de Italia",
+		answer: "Roma"
+	},
+	{
+		question: "Capital de Francia",
+		answer: "París"
+	},
+	{
+		question: "Capital de España",
+		answer: "Madrid"
+	},
+	{
+		question: "Capital de Portugal",
+		answer: "Lisboa"
+	}
+];
+
+//Funciones de Quizzes
+//CUENTA QUIZZES
+const count = () => quizzes.length;
+
+//AÑADE QUIZ
+const add = (question, answer) => {
+	quizzes.push({
+		question: (question || "").trim(),
+		answer: (answer || "").trim()
+	});
+};
+
+//ACTUALIZA QUIZ
+const update = (id, question, answer) => {
+	const quiz = quizzes[id];
+	if (typeof quiz == "undefined") {
+		throw new Error (`El valor del parámetro id no es válido`);
+	}
+	quizzes.splice(id, 1, {
+		question: (question || "").trim(),
+		answer: (answer || "").trim()
+	});
+};
+
+//DEVUELVE TODOS LOS QUIZZES
+const getAll = () => JSON.parse(JSON.stringify(quizzes));
+
+//DEVUELVE UN QUIZ POR SU ID
+const getByIndex = id => {
+	const quiz = quizzes[id];
+	if (typeof quiz == "undefined") {
+		throw new Error (`El valor del parámetro id no es válido`);
+	}
+	return JSON.parse(JSON.stringify(quiz));
+};
+
+// BORRAR QUIZ POR SU ID
+const deleteByIndex = id => {
+	const quiz = quizzes[id];
+	if (typeof quiz == "undefined") {
+		throw new Error (`El valor del parámetro id no es válido`);
+	}
+	quizzes.splice(id, 1);
+};
+
 //Manejadores de texto
 //COLOREAR
 const colorize = (msg, color) => {
