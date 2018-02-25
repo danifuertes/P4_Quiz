@@ -1,96 +1,8 @@
 //Requires iniciales
 const readline = require('readline');
-const figlet = require('figlet');
-const chalk = require('chalk');
-
-//Quizzes
-let quizzes = [
-	{
-		question: "Capital de Italia",
-		answer: "Roma"
-	},
-	{
-		question: "Capital de Francia",
-		answer: "París"
-	},
-	{
-		question: "Capital de España",
-		answer: "Madrid"
-	},
-	{
-		question: "Capital de Portugal",
-		answer: "Lisboa"
-	}
-];
-
-//Funciones de Quizzes
-//CUENTA QUIZZES
-const count = () => quizzes.length;
-
-//AÑADE QUIZ
-const add = (question, answer) => {
-	quizzes.push({
-		question: (question || "").trim(),
-		answer: (answer || "").trim()
-	});
-};
-
-//ACTUALIZA QUIZ
-const update = (id, question, answer) => {
-	const quiz = quizzes[id];
-	if (typeof quiz == "undefined") {
-		throw new Error (`El valor del parámetro id no es válido`);
-	}
-	quizzes.splice(id, 1, {
-		question: (question || "").trim(),
-		answer: (answer || "").trim()
-	});
-};
-
-//DEVUELVE TODOS LOS QUIZZES
-const getAll = () => JSON.parse(JSON.stringify(quizzes));
-
-//DEVUELVE UN QUIZ POR SU ID
-const getByIndex = id => {
-	const quiz = quizzes[id];
-	if (typeof quiz == "undefined") {
-		throw new Error (`El valor del parámetro id no es válido`);
-	}
-	return JSON.parse(JSON.stringify(quiz));
-};
-
-// BORRAR QUIZ POR SU ID
-const deleteByIndex = id => {
-	const quiz = quizzes[id];
-	if (typeof quiz == "undefined") {
-		throw new Error (`El valor del parámetro id no es válido`);
-	}
-	quizzes.splice(id, 1);
-};
-
-//Manejadores de texto
-//COLOREAR
-const colorize = (msg, color) => {
-	if (typeof color !== "undefined") {
-		msg = chalk[color].bold(msg);
-	}
-	return msg;
-}
-
-//TEXTO POR PANTALLA
-const log = (msg, color) => {
-	console.log(colorize(msg, color));
-}
-
-//TEXTO GRANDE POR PANTALLA
-const biglog = (msg, color) => {
-	log(figlet.textSync(msg, {horizontalLayout: 'full'}), color)
-}
-
-//TEXTO DE ERROR POR PANTALLA
-const errlog = (emsg) => {
-	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), bgYellowBright)}`);
-}
+const model = require('./model');
+const {log, biglog, errlog, colorize} = require('./out');
+const cmds = require('./cmds');
 
 //Mensaje inicial
 biglog('CORE Quiz', 'green');
@@ -108,6 +20,8 @@ const rl = readline.createInterface({
 
 rl.prompt();
 
+
+
 //Nuevo comando escrito
 rl.on('line', (line) => {
 
@@ -120,45 +34,45 @@ rl.on('line', (line) => {
     	break;
 	case 'h':
 	case 'help':
-		helpCmd();
+		cmds.helpCmd(rl);
       break;
 
   	case 'list':
-  		listCmd();
+  		cmds.listCmd(rl);
   		break;
 
 	case 'show':
-  		showCmd(args[1]);
+  		cmds.showCmd(args[1], rl);
   		break;
 
 	case 'add':
-  		addCmd();
+  		cmds.addCmd(rl);
   		break;
 
 	case 'delete':
-  		deleteCmd(args[1]);
+  		cmds.deleteCmd(args[1], rl);
   		break;
 
 	case 'edit':
-  		editCmd(args[1]);
+  		cmds.editCmd(args[1], rl);
   		break;
 
 	case 'test':
-  		testCmd(args[1]);
+  		cmds.testCmd(args[1], rl);
   		break;
 
 	case 'play':
 	case 'p':
-  		playCmd();
+  		cmds.playCmd(rl);
   		break;
 
 	case 'credits':
-  		creditsCmd();
+  		cmds.creditsCmd(rl);
   		break;
 
 	case 'quit':
 	case 'q':
-  		quitCmd();
+  		cmds.quitCmd(rl);
   		break;
 
     default:
@@ -173,76 +87,3 @@ rl.on('line', (line) => {
   biglog('¡Hasta pronto!', 'red');
   process.exit(0);
 });
-
-//AYUDA
-const helpCmd = () => {
-	log("Commandos:");
-	log("	h|help - Muestra esta ayuda.");
-	log("	list - Listar los quizzes existentes.");
-	log("	show <id> - Muestra la pregunta y la respuesta el quiz indicado.");
-	log("	add - Añadir un nuevo quiz interactivamente.");
-	log("	delete <id> - Borrar el quiz indicado.");
-	log("	edit <id> - Editar el quiz indicado.");
-	log("	test <id> - Probar el quiz indicado.");
-	log("	p|play - Jugar a preguntar aleatoriamente todos los quizzes.");
-	log("	credits - Créditos.");
-	log("	q|quit - Salir del programa.");
-	rl.prompt();
-};
-
-// Descripción de la funciones de los comandos
-//LISTAR
-const listCmd = () => {
-	log("Listar todos los quizzes existentes", 'red');
-	rl.prompt();
-};
-
-//MOSTRAR
-const showCmd = id => {
-	log("Mostrar el quiz indicado", 'red');
-	rl.prompt();
-};
-
-//AÑADIR
-const addCmd = () => {
-	log("Añadir un nuevo quiz", 'red');
-	rl.prompt();
-};
-
-//BORRAR
-const deleteCmd = id => {
-	log("Borrar el quiz indicado", 'red');
-	rl.prompt();
-};
-
-//EDITAR
-const editCmd = id => {
-	log("Editar el quiz indicado", 'red');
-	rl.prompt();
-};
-
-//TEST
-const testCmd = id => {
-	log("Probar el quiz indicado", 'red');
-	rl.prompt();
-};
-
-
-//JUGAR
-const playCmd = () => {
-	log("Jugar", 'red');
-	rl.prompt();
-};
-
-//CRÉDITOS
-const creditsCmd = () => {
-	log("Autores de la práctica:", 'red');
-	log("	Alexander de la Torre Astanin", 'red');
-	log("	Daniel Fuertes Coiras", 'red');
-  	rl.prompt();
-}
-
-//SALIR
-const quitCmd = () => {
-	rl.close();
-}
