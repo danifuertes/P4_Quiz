@@ -193,8 +193,8 @@ exports.playCmd = rl => {
 //CRÉDITOS
 exports.creditsCmd = rl => {
 	log("Autores de la práctica:", 'red');
-	log("	Alexander de la Torre Astanin", 'red');
 	log("	Daniel Fuertes Coiras", 'red');
+	log("	Alexander de la Torre Astanin", 'red');
   	rl.prompt();
 };
 
