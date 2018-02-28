@@ -100,14 +100,14 @@ exports.testCmd = (id, rl) => {
 		try {
 			const quiz = model.getByIndex(id);
 			rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
-				log(' Su respuesta es:\n');
+				log(' Su contestación es:\n');
 				let user = answer.trim().toLowerCase();
 				let real = quiz.answer.trim().toLowerCase();
 				if (user === real){
-					biglog('CORRECTA', 'green');
+					biglog('CORRECTO', 'green');
 					rl.prompt();
 				} else {
-					biglog('INCORRECTA', 'red');
+					biglog('INCORRECTO', 'red');
 					rl.prompt();
 				}
 			});
@@ -138,11 +138,11 @@ exports.playCmd = rl => {
 				let quiz = model.getByIndex(toBeResolved[id]);
 				toBeResolved.splice(id, 1);
 				rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
-					log(' Su respuesta es:\n');
+					log(' Su contestación es:\n');
 					let user = answer.trim().toLowerCase();
 					let real = quiz.answer.trim().toLowerCase();
 					if (user === real){
-						biglog('CORRECTA', 'green');
+						biglog('CORRECTO', 'green');
 						score++;
 						if (toBeResolved.length === 0){
 							log('¡Has respondido a todas las preguntas con éxito!', 'red');
@@ -152,7 +152,7 @@ exports.playCmd = rl => {
 							playOne();
 						}
 					} else {
-						biglog('INCORRECTA', 'red');
+						biglog('INCORRECTO', 'red');
 						log(`Puntuación final: ${colorize(score, 'green')} puntos`);
 						rl.prompt();
 					}
