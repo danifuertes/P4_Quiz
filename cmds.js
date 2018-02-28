@@ -102,11 +102,13 @@ exports.testCmd = (id, rl) => {
 			rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
 				let user = answer.trim().toLowerCase();
 				let real = quiz.answer.trim().toLowerCase();
-				if (user.valueOf() === real.valueOf()){
-					biglog('CORRECTO', 'green');
+				if (user === real){
+					log('Su respuesta es correcta.');
+					biglog('Correcta', 'green');
 					rl.prompt();
 				} else {
-					biglog('INCORRECTO', 'red');
+					log('Su respuesta es incorrecta.');
+					biglog('Incorrecta', 'red');
 					rl.prompt();
 				}
 			});
@@ -139,19 +141,21 @@ exports.playCmd = rl => {
 				rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
 					let user = answer.trim().toLowerCase();
 					let real = quiz.answer.trim().toLowerCase();
-					if (user.valueOf() === real.valueOf()){
-						biglog('CORRECTO', 'green');
+					if (user === real){
 						score++;
+						log(`CORRECTO - LLeva ${score} aciertos`);
 						if (toBeResolved.length === 0){
-							log('¡Has respondido a todas las preguntas con éxito!', 'red');
-							log(`Puntuación final: ${colorize(score, 'green')} puntos`);
+							log('No hay nada más que preguntar');
+							log(`Fin del juego. Aciertos: ${score}`);
+							biglog(`${score}`, 'magenta');
 							rl.prompt();
 						} else {
 							playOne();
 						}
 					} else {
-						biglog('INCORRECTO', 'red');
-						log(`Puntuación final: ${colorize(score, 'green')} puntos`);
+						log('INCORRECTO');
+						log(`Fin del juego. Aciertos: ${score}`);
+						biglog(`${score}`, 'magenta');
 						rl.prompt();
 					}
 				});
