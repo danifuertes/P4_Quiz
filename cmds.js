@@ -102,7 +102,7 @@ exports.testCmd = (id, rl) => {
 			rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
 				let user = answer.trim().toLowerCase();
 				let real = quiz.answer.trim().toLowerCase();
-				if (user === real){
+				if (user.valueOf() === real.valueOf()){
 					biglog('CORRECTO', 'green');
 					rl.prompt();
 				} else {
@@ -139,7 +139,7 @@ exports.playCmd = rl => {
 				rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
 					let user = answer.trim().toLowerCase();
 					let real = quiz.answer.trim().toLowerCase();
-					if (user === real){
+					if (user.valueOf() === real.valueOf()){
 						biglog('CORRECTO', 'green');
 						score++;
 						if (toBeResolved.length === 0){
