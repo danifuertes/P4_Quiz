@@ -103,18 +103,6 @@ exports.testCmd = (id, rl) => {
 				log(' Su respuesta es:\n');
 				let user = answer.trim().toLowerCase();
 				let real = quiz.answer.trim().toLowerCase();
-				user = user.replace(" ", "");
-				user = user.replace("á", "a");
-				user = user.replace("é", "e");
-				user = user.replace("í", "i");
-				user = user.replace("ó", "o");
-				user = user.replace("ú", "u");
-				real = real.replace(" ", "");
-				real = real.replace("á", "a");
-				real = real.replace("é", "e");
-				real = real.replace("í", "i");
-				real = real.replace("ó", "o");
-				real = real.replace("ú", "u");
 				if (user === real){
 					biglog('CORRECTA', 'green');
 					rl.prompt();
@@ -153,18 +141,6 @@ exports.playCmd = rl => {
 					log(' Su respuesta es:\n');
 					let user = answer.trim().toLowerCase();
 					let real = quiz.answer.trim().toLowerCase();
-					user = user.replace(" ", "");
-					user = user.replace("á", "a");
-					user = user.replace("é", "e");
-					user = user.replace("í", "i");
-					user = user.replace("ó", "o");
-					user = user.replace("ú", "u");
-					real = real.replace(" ", "");
-					real = real.replace("á", "a");
-					real = real.replace("é", "e");
-					real = real.replace("í", "i");
-					real = real.replace("ó", "o");
-					real = real.replace("ú", "u");
 					if (user === real){
 						biglog('CORRECTA', 'green');
 						score++;
