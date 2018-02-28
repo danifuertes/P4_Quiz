@@ -100,7 +100,6 @@ exports.testCmd = (id, rl) => {
 		try {
 			const quiz = model.getByIndex(id);
 			rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
-				log(' Su contestación es:\n');
 				let user = answer.trim().toLowerCase();
 				let real = quiz.answer.trim().toLowerCase();
 				if (user === real){
@@ -138,7 +137,6 @@ exports.playCmd = rl => {
 				let quiz = model.getByIndex(toBeResolved[id]);
 				toBeResolved.splice(id, 1);
 				rl.question(colorize(` ¿${quiz.question}? `, 'red'), answer => {
-					log(' Su contestación es:\n');
 					let user = answer.trim().toLowerCase();
 					let real = quiz.answer.trim().toLowerCase();
 					if (user === real){
