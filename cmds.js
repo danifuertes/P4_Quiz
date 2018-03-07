@@ -244,10 +244,9 @@ exports.playCmd = rl => {
 
 	let score = 0;
 	let toBeResolved = [];
-	let i = 0;
 	models.quiz.findAll()
-	.each(() => {
-		toBeResolved.push(++i);
+	.each(quiz => {
+		toBeResolved.push(quiz.id);
 	})
 	.then(() => {
 		playOne();
