@@ -216,16 +216,16 @@ exports.playCmd = rl => {
 			let real = check.real.trim().toLowerCase();
 			if (user === real){
 				score++;
-				log(`CORRECTO - LLeva ${score} aciertos`);
+				log(`CORRECTO - LLeva ${score} aciertos.`);
 				if (toBeResolved.length === 0){
-					log('No hay nada más que preguntar');
+					log('No hay nada más que preguntar.');
 					log(`Fin del juego. Aciertos: ${score}`);
 					biglog(`${score}`, 'magenta');
 				} else {
 					playOne();
 				}
 			} else {
-				log('INCORRECTO');
+				log('INCORRECTO.');
 				log(`Fin del juego. Aciertos: ${score}`);
 				biglog(`${score}`, 'magenta');
 			}
