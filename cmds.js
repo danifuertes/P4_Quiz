@@ -219,14 +219,14 @@ exports.playCmd = rl => {
 				log(`CORRECTO - LLeva ${score} aciertos.`);
 				if (toBeResolved.length === 0){
 					log('No hay nada más que preguntar.');
-					log('Fin del examen. Aciertos:');
+					log('Fin del examen. Aciertos: '+`${score}`);
 					biglog(`${score}`, 'magenta');
 				} else {
 					playOne();
 				}
 			} else {
 				log('INCORRECTO.');
-				log('Fin del examen. Aciertos:');
+				log('Fin del examen. Aciertos: '+`${score}`);
 				biglog(`${score}`, 'magenta');
 			}
 		})
