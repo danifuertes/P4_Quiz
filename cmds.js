@@ -237,10 +237,9 @@ exports.playCmd = rl => {
 						return;
 					} else {
 						resolve(playOne());
-						return;
 					}
 				} else {
-					log(`INCORRECTO.`);
+					log("Su respuesta es incorrecta. INCORRECTO.");
 					log(`Fin del juego. Aciertos: ${score}`);
 					biglog(`${score}`, 'magenta');
 					resolve();
@@ -256,6 +255,8 @@ exports.playCmd = rl => {
 			})
 			.then(() => {
 				rl.prompt();
+				resolve();
+				return;
 			});
 		});
 	}
