@@ -240,7 +240,7 @@ exports.playCmd = rl => {
 						return;
 					}
 				} else {
-					log('INCORRECTO.');
+					log('Su respuesta es incorrecta.');
 					log(`Fin del juego. Aciertos: ${score}`);
 					biglog(`${score}`, 'magenta');
 					resolve();
