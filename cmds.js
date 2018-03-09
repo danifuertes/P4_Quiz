@@ -197,6 +197,12 @@ exports.testCmd = (id, rl) => {
 exports.playCmd = rl => {
 
 	const playOne = () => {
+		if (toBeResolved.length === 0) {
+			log('No hay nada más que preguntar.');
+			log(`Fin del juego. Aciertos: ${score}`);
+			biglog(`${score}`, 'magenta');
+			return;
+		}
 		let rnd = Math.floor(Math.random()*toBeResolved.length);
 		id = toBeResolved[rnd];
 		toBeResolved.splice(rnd, 1);
@@ -249,7 +255,7 @@ exports.playCmd = rl => {
 		toBeResolved.push(quiz.id);
 	})
 	.then(() => {
-		playOne();
+		return playOne();
 	})
 	.catch(Sequelize.ValidationError, error => {
 		errlog('El quiz es erróneo: ');
