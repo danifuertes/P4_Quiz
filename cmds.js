@@ -156,39 +156,43 @@ exports.editCmd = (id, rl) => {
 
 //TEST
 exports.testCmd = (id, rl) => {
-	validateId(id)
-	.then(id => models.quiz.findById(id))
-	.then(quiz => {
-		if (!quiz) {
-			throw new Error(`No existe un quiz asociado al id = ${id}.`);
-		}
-		return makeQuestion(rl, ` ¿${quiz.question}? `)
-		.then(a => {
-			return {user: a, real: quiz.answer};
+	return new Promise ((resolve, reject) => {
+		validateId(id)
+		.then(id => models.quiz.findById(id))
+		.then(quiz => {
+			if (!quiz) {
+				throw new Error(`No existe un quiz asociado al id = ${id}.`);
+			}
+			return makeQuestion(rl, ` ¿${quiz.question}? `)
+			.then(a => {
+				return {user: a, real: quiz.answer};
+			});
+		})
+		.then(check => {
+			let user = check.user.trim().toLowerCase();
+			let real = check.real.trim().toLowerCase();
+			if (user === real){
+				log('Su respuesta es correcta.');
+				biglog('Correcta', 'green');
+				resolve();
+				return;
+			} else {
+				log('Su respuesta es incorrecta.');
+				biglog('Incorrecta', 'red');
+				resolve();
+				return;
+			}
+		})
+		.catch(Sequelize.ValidationError, error => {
+			errlog('El quiz es erróneo: ');
+			error.errors.forEach(({message}) => errlog(message));
+		})
+		.catch(error => {
+			errlog(error.message);
+		})
+		.then(() => {
+			rl.prompt();
 		});
-	})
-	.then(check => {
-		let user = check.user.trim().toLowerCase();
-		let real = check.real.trim().toLowerCase();
-		if (user === real){
-			log('Su respuesta es correcta.');
-			biglog('Correcta', 'green');
-			rl.prompt();
-		} else {
-			log('Su respuesta es incorrecta.');
-			biglog('Incorrecta', 'red');
-			rl.prompt();
-		}
-	})
-	.catch(Sequelize.ValidationError, error => {
-		errlog('El quiz es erróneo: ');
-		error.errors.forEach(({message}) => errlog(message));
-	})
-	.catch(error => {
-		errlog(error.message);
-	})
-	.then(() => {
-		rl.prompt();
 	});
 };
 
