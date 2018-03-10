@@ -210,11 +210,12 @@ exports.playCmd = rl => {
 				biglog(`${score}`, 'magenta');
 				resolve();
 				return;
+			} else {
+				let rnd = Math.floor(Math.random()*toBeResolved.length);
+				id = toBeResolved[rnd];
+				toBeResolved.splice(rnd, 1);
+				return id;
 			}
-			let rnd = Math.floor(Math.random()*toBeResolved.length);
-			id = toBeResolved[rnd];
-			toBeResolved.splice(rnd, 1);
-			return id;
 		})
 		.then(id => {
 			validateId(id);
@@ -237,17 +238,20 @@ exports.playCmd = rl => {
 				score++;
 				log(`CORRECTO - LLeva ${score} aciertos.`);
 				if (toBeResolved.length === 0){
-					log('No hay nada más que preguntar.');
-					log(`Fin del juego. Aciertos: ${score}`);
-					biglog(`${score}`, 'magenta');
+					log("Su respuesta es incorrecta");
+					biglog("CORRECTA", "red");
+					log(`Ha conseguido un total de ${colorize(score, 'magenta')} puntos`);
 					return;
 				} else {
 					playOne();
 					return;
 				}
 			} else {
-				log("INCORRECTO.");
-				log(`Fin del juego. Aciertos: ${score}`);
+				log("Su respuesta es incorrecta.");
+				biglog("INCORRECTA", "red");
+				log("Fin del juego");
+				biglog("GAME OVER", "red");
+				log(`Ha conseguido un total de ${colorize(score, 'magenta')} puntos`);
 				biglog(`${score}`, 'magenta');
 				return;
 			}
