@@ -200,10 +200,34 @@ exports.testCmd = (id, rl) => {
 //JUGAR
 exports.playCmd = rl => {
 
+	let score = 0;
+	let toBeResolved = [];
+
+	models.quiz.findAll()
+	.each(quiz => {
+		toBeResolved.push(quiz.id);
+	})
+	.then(() => {
+		return playOne();
+	})
+	.catch(Sequelize.ValidationError, error => {
+		errlog('El quiz es erróneo: ');
+		error.errors.forEach(({message}) => errlog(message));
+	})
+	.catch(error => {
+		errlog(error.message);
+	})
+	.then(() => {
+		rl.prompt();
+		return;
+	});
+
 	const playOne = () => {
-		return new Promise ((resolve, reject) => {
+		return new Sequelize.Promise ((resolve, reject) => {
 			if (toBeResolved.length === 0) {
-				console.log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+				log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+				resolve();
+				return;
 				//biglog(`${score}`, 'magenta');
 			} else {
 				let rnd = Math.floor(Math.random()*toBeResolved.length);
@@ -227,9 +251,9 @@ exports.playCmd = rl => {
 				let real = check.real.trim().toLowerCase();
 				if (user === real){
 					score++;
-					console.log(` CORRECTO - LLeva ${score} aciertos.`);
+					log(` CORRECTO - LLeva ${score} aciertos.`);
 					if (toBeResolved.length === 0){
-						console.log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+						log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
 						//biglog(`${score}`, 'magenta');
 						resolve();
 						return;
@@ -238,7 +262,7 @@ exports.playCmd = rl => {
 						return;
 					}
 				} else {
-					console.log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
+					log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
 					//biglog(`${score}`, 'magenta');
 					resolve();
 					return;
@@ -258,28 +282,6 @@ exports.playCmd = rl => {
 			});
 		});
 	}
-
-	let score = 0;
-	let id = 0;
-	let toBeResolved = [];
-	models.quiz.findAll()
-	.each(quiz => {
-		toBeResolved.push(quiz.id);
-	})
-	.then(() => {
-		return playOne();
-	})
-	.catch(Sequelize.ValidationError, error => {
-		errlog('El quiz es erróneo: ');
-		error.errors.forEach(({message}) => errlog(message));
-	})
-	.catch(error => {
-		errlog(error.message);
-	})
-	.then(() => {
-		rl.prompt();
-		return;
-	});
 };
 
 //CRÉDITOS
