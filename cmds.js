@@ -201,71 +201,74 @@ exports.testCmd = (id, rl) => {
 exports.playCmd = rl => {
 
 	const playOne = () => {
-		return Promise.resolve()
-		.then(() => {
-			if (toBeResolved.length === 0) {
-				log("INCORRECTO.");
-				log('No hay nada más que preguntar.');
-				log(`Fin del juego. Aciertos: ${score}`);
-				biglog(`${score}`, 'magenta');
-				resolve();
-				return;
-			} else {
-				let rnd = Math.floor(Math.random()*toBeResolved.length);
-				id = toBeResolved[rnd];
-				toBeResolved.splice(rnd, 1);
-				return id;
-			}
-		})
-		.then(id => {
-			validateId(id);
-			return id;
-		})
-		.then(id => models.quiz.findById(id))
-		.then(quiz => {
-			if (!quiz) {
-				throw new Error(`No existe un quiz asociado al id = ${id}.`);
-			}
-			return makeQuestion(rl, ` ¿${quiz.question}? `)
-			.then(a => {
-				return {user: a, real: quiz.answer};
-			});
-		})
-		.then(check => {
-			let user = check.user.trim().toLowerCase();
-			let real = check.real.trim().toLowerCase();
-			if (user === real){
-				score++;
-				log(`CORRECTO - LLeva ${score} aciertos.`);
-				if (toBeResolved.length === 0){
-					log("Su respuesta es incorrecta");
-					biglog("CORRECTA", "red");
-					log(`Ha conseguido un total de ${colorize(score, 'magenta')} puntos`);
+		return new Promise ((resolve, reject) => {
+			Promise.resolve()
+			.then(() => {
+				if (toBeResolved.length === 0) {
+					log("INCORRECTO.");
+					log('No hay nada más que preguntar.');
+					log(`Fin del juego. Aciertos: ${score}`);
+					biglog(`${score}`, 'magenta');
+					resolve();
 					return;
 				} else {
-					playOne();
+					let rnd = Math.floor(Math.random()*toBeResolved.length);
+					id = toBeResolved[rnd];
+					toBeResolved.splice(rnd, 1);
+					resolve();
+					return id;
+				}
+			})
+			.then(id => {
+				validateId(id);
+				resolve();
+				return id;
+			})
+			.then(id => models.quiz.findById(id))
+			.then(quiz => {
+				if (!quiz) {
+					throw new Error(`No existe un quiz asociado al id = ${id}.`);
+				}
+				return makeQuestion(rl, ` ¿${quiz.question}? `)
+				.then(a => {
+					resolve();
+					return {user: a, real: quiz.answer};
+				});
+			})
+			.then(check => {
+				let user = check.user.trim().toLowerCase();
+				let real = check.real.trim().toLowerCase();
+				if (user === real){
+					score++;
+					log(` CORRECTO - LLeva ${score} aciertos.`);
+					if (toBeResolved.length === 0){
+						log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+						biglog(`${score}`, 'magenta');
+						resolve();
+						return;
+					} else {
+						resolve(playOne());
+						return;
+					}
+				} else {
+					log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
+					biglog(`${score}`, 'magenta');
+					resolve();
 					return;
 				}
-			} else {
-				log("Su respuesta es incorrecta.");
-				biglog("INCORRECTA", "red");
-				log("Fin del juego");
-				biglog("GAME OVER", "red");
-				log(`Ha conseguido un total de ${colorize(score, 'magenta')} puntos`);
-				biglog(`${score}`, 'magenta');
+			})
+			.catch(Sequelize.ValidationError, error => {
+				errlog('El quiz es erróneo: ');
+				error.errors.forEach(({message}) => errlog(message));
+			})
+			.catch(error => {
+				errlog(error.message);
+			})
+			.then(() => {
+				rl.prompt();
+				resolve();
 				return;
-			}
-		})
-		.catch(Sequelize.ValidationError, error => {
-			errlog('El quiz es erróneo: ');
-			error.errors.forEach(({message}) => errlog(message));
-		})
-		.catch(error => {
-			errlog(error.message);
-		})
-		.then(() => {
-			rl.prompt();
-			return;
+			});
 		});
 	}
 
