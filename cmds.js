@@ -203,7 +203,7 @@ exports.playCmd = rl => {
 	const playOne = () => {
 		return new Promise ((resolve, reject) => {
 			if (toBeResolved.length === 0) {
-				log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+				console.log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
 				//biglog(`${score}`, 'magenta');
 			} else {
 				let rnd = Math.floor(Math.random()*toBeResolved.length);
@@ -227,9 +227,9 @@ exports.playCmd = rl => {
 				let real = check.real.trim().toLowerCase();
 				if (user === real){
 					score++;
-					log(` CORRECTO - LLeva ${score} aciertos.`);
+					console.log(` CORRECTO - LLeva ${score} aciertos.`);
 					if (toBeResolved.length === 0){
-						log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+						console.log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
 						//biglog(`${score}`, 'magenta');
 						resolve();
 						return;
@@ -238,7 +238,7 @@ exports.playCmd = rl => {
 						return;
 					}
 				} else {
-					log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
+					console.log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
 					//biglog(`${score}`, 'magenta');
 					resolve();
 					return;
