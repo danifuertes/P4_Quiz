@@ -275,11 +275,6 @@ exports.playCmd = rl => {
 			.catch(error => {
 				errlog(error.message);
 			})
-			.then(() => {
-				rl.prompt();
-				resolve();
-				return;
-			});
 		});
 	}
 };
