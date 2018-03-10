@@ -202,28 +202,17 @@ exports.playCmd = rl => {
 
 	const playOne = () => {
 		return new Promise ((resolve, reject) => {
-			Promise.resolve()
-			.then(() => {
-				if (toBeResolved.length === 0) {
-					log("INCORRECTO.");
-					log('No hay nada más que preguntar.');
-					log(`Fin del juego. Aciertos: ${score}`);
-					biglog(`${score}`, 'magenta');
-					resolve();
-					return;
-				} else {
-					let rnd = Math.floor(Math.random()*toBeResolved.length);
-					id = toBeResolved[rnd];
-					toBeResolved.splice(rnd, 1);
-					resolve();
-					return id;
-				}
-			})
-			.then(id => {
-				validateId(id);
-				resolve();
-				return id;
-			})
+			if (toBeResolved.length === 0) {
+				log("INCORRECTO.");
+				log('No hay nada más que preguntar.');
+				log(`Fin del juego. Aciertos: ${score}`);
+				biglog(`${score}`, 'magenta');
+			} else {
+				let rnd = Math.floor(Math.random()*toBeResolved.length);
+				id = toBeResolved[rnd];
+				toBeResolved.splice(rnd, 1);
+			}
+			validateId(id)
 			.then(id => models.quiz.findById(id))
 			.then(quiz => {
 				if (!quiz) {
@@ -273,6 +262,7 @@ exports.playCmd = rl => {
 	}
 
 	let score = 0;
+	let id = 0;
 	let toBeResolved = [];
 	models.quiz.findAll()
 	.each(quiz => {
