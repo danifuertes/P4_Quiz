@@ -204,8 +204,13 @@ exports.playCmd = rl => {
 	let toBeResolved = [];
 
 	models.quiz.findAll()
-	.each(quiz => {
-		toBeResolved.push(quiz.id);
+	.then(quizzes => {
+		return new Sequelize.Promise((resolve, reject) => {
+			toBeResolved = quizzes;
+			resolve();
+			return;
+		})
+		
 	})
 	.then(() => {
 		return playOne();
@@ -231,43 +236,36 @@ exports.playCmd = rl => {
 				//biglog(`${score}`, 'magenta');
 			} else {
 				let rnd = Math.floor(Math.random()*toBeResolved.length);
-				id = toBeResolved[rnd];
+				let quiz = toBeResolved[rnd];
 				toBeResolved.splice(rnd, 1);
-			}
-			validateId(id)
-			.then(id => models.quiz.findById(id))
-			.then(quiz => {
 				if (!quiz) {
 					throw new Error(`No existe un quiz asociado al id = ${id}.`);
-				}
-				return makeQuestion(rl, ` ¿${quiz.question}? `)
-				.then(a => {
-					resolve();
-					return {user: a, real: quiz.answer};
-				});
-			})
-			.then(check => {
-				let user = check.user.trim().toLowerCase();
-				let real = check.real.trim().toLowerCase();
-				if (user === real){
-					score++;
-					log(` CORRECTO - LLeva ${score} aciertos.`);
-					if (toBeResolved.length === 0){
-						log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
-						//biglog(`${score}`, 'magenta');
-						resolve();
-						return;
-					} else {
-						resolve(playOne());
-						return;
-					}
 				} else {
-					log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
-					//biglog(`${score}`, 'magenta');
-					resolve();
-					return;
+					makeQuestion(rl, ` ¿${quiz.question}? `)
+					.then(answer => {
+						let user = answer.trim().toLowerCase();
+						let real = quiz.answer.trim().toLowerCase();
+						if (user === real){
+							score++;
+							log(` CORRECTO - LLeva ${score} aciertos.`);
+							if (toBeResolved.length === 0){
+								log(` No hay nada más que preguntar. Fin del juego. Aciertos: ${score}`);
+								//biglog(`${score}`, 'magenta');
+								resolve();
+								return;
+							} else {
+								resolve(playOne());
+								return;
+							}
+						} else {
+							log(` INCORRECTO. Fin del juego. Aciertos: ${score}`);
+							//biglog(`${score}`, 'magenta');
+							resolve();
+							return;
+						}
+					})
 				}
-			})
+			}
 		});
 	}
 };
