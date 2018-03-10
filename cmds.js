@@ -268,13 +268,6 @@ exports.playCmd = rl => {
 					return;
 				}
 			})
-			.catch(Sequelize.ValidationError, error => {
-				errlog('El quiz es erróneo: ');
-				error.errors.forEach(({message}) => errlog(message));
-			})
-			.catch(error => {
-				errlog(error.message);
-			})
 		});
 	}
 };
