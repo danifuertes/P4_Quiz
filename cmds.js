@@ -272,8 +272,8 @@ exports.playCmd = (socket, rl) => {
 
 //CRÉDITOS
 exports.creditsCmd = (socket, rl) => {
-	log("Autores de la práctica:", 'red');
-	log("	Daniel Fuertes Coiras", 'red');
+	log(socket, "Autores de la práctica:", 'red');
+	log(socket, "	Daniel Fuertes Coiras", 'red');
   	rl.prompt();
 };
 
