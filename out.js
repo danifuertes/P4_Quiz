@@ -13,18 +13,18 @@ const colorize = (msg, color) => {
 };
 
 //TEXTO POR PANTALLA
-const log = (msg, color) => {
-	console.log(colorize(msg, color));
+const log = (socket, msg, color) => {
+	socket.write(colorize(msg, color) + "\r\n");
 };
 
 //TEXTO GRANDE POR PANTALLA
-const biglog = (msg, color) => {
-	log(figlet.textSync(msg, {horizontalLayout: 'full'}), color)
+const biglog = (socket, msg, color) => {
+	log(socket, figlet.textSync(msg, {horizontalLayout: 'full'}), color)
 };
 
 //TEXTO DE ERROR POR PANTALLA
-const errlog = (emsg) => {
-	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}`);
+const errlog = (socket, emsg) => {
+	socket.write(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}\r\n`);
 };
 
 //Funciones a exportar
