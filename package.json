@@ -25,7 +25,7 @@
   "dependencies": {
     "chalk": "^2.3.1",
     "figlet": "^1.2.0",
-    "sequelize": "^4.35.2",
+    "sequelize": ">=5.3.0",
     "sqlite3": "^3.1.13"
   }
 }
